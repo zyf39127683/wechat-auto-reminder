@@ -4,10 +4,10 @@ from datetime import datetime, date
 from time import localtime
 
 def get_access_token():
-    app_id = config["wx4f047599817f545d"]
-    app_secret = config["fea5cae260248d285e712971f6c60cf3"]
+    app_id = config["app_id"]
+    app_secret = config["app_secret"]
     url = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={}&secret={}"
-                .format(wx4f047599817f545d, fea5cae260248d285e712971f6c60cf3))
+                .format(app_id, app_secret))
     try:
         access_token = get(url).json()['access_token']
     except KeyError:
@@ -21,7 +21,7 @@ def get_weather(region):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
     }
-    key = config["75e17269ca6643f0b9c5e681d3d6bcf8"]
+    key = config["weather_key"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
     response = get(region_url, headers=headers).json()
     if response["code"] == "404":
