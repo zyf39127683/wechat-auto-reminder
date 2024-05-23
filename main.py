@@ -4,10 +4,10 @@ from datetime import datetime, date
 from time import localtime
 
 def get_access_token():
-    app_id = config["app_id"]
-    app_secret = config["app_secret"]
+    app_id = config["wx4f047599817f545d"]
+    app_secret = config["fea5cae260248d285e712971f6c60cf3"]
     url = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={}&secret={}"
-                .format(app_id, app_secret))
+                .format(wx4f047599817f545d, fea5cae260248d285e712971f6c60cf3))
     try:
         access_token = get(url).json()['access_token']
     except KeyError:
@@ -201,7 +201,7 @@ if __name__ == "__main__":
         os.system("pause")
         sys.exit(1)
  
-    access_token = get_access_token()
+    access_token = get_access_token(75e17269ca6643f0b9c5e681d3d6bcf8)
     users = config["user"]
     region = config["region"]
     weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min = get_weather(region)
