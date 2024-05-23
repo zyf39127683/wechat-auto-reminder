@@ -21,7 +21,7 @@ def get_weather(region):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
     }
-    key = config["weather_key"]
+    key = config["75e17269ca6643f0b9c5e681d3d6bcf8"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
     response = get(region_url, headers=headers).json()
     if response["code"] == "404":
@@ -201,7 +201,7 @@ if __name__ == "__main__":
         os.system("pause")
         sys.exit(1)
  
-    access_token = get_access_token(75e17269ca6643f0b9c5e681d3d6bcf8)
+    access_token = get_access_token()
     users = config["user"]
     region = config["region"]
     weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min = get_weather(region)
