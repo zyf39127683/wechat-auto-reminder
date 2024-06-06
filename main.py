@@ -52,17 +52,17 @@ def get_weather(region):
     response = get(indices_url, headers=headers).json()
     print("Weather API Response:", response) 
     
-    sport_index_texts = []
-    car_wash_index_texts = []
+    sport_index_text = ""
+    car_wash_index_text = ""
     
     for item in response["daily"]:
         if item["type"] == "1":
-            sport_index_texts.append(item["text"])
+            sport_index_text.append(item["text"])
         elif item["type"] == "2":
-            car_wash_index_texts.append(item["text"])
+            car_wash_index_text.append(item["text"])
     
-    print("Sport Index Texts:", sport_index_texts)
-    print("Car Wash Index Texts:", car_wash_index_texts)
+    print("Sport Index Text:", sport_index_text)
+    print("Car Wash Index Text:", car_wash_index_text)
     
     return sport_index_text, car_wash_index_text
 
