@@ -34,6 +34,7 @@ def get_weather(region):
         sys.exit(1)
     else:
         location_id = response["location"][0]["id"]
+    #获取3日天气
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
     response = get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
@@ -42,7 +43,14 @@ def get_weather(region):
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
+    
+    #获取天气质量
+    weather_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
+    response = get(weather_url, headers=headers).json()
+    sport_index_text = response["daily"][0]["text"]
+    car_wash_index_text = response["daily"][0]["text"]
+    
+    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min，sport_index_text，car_wash_index_text
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
