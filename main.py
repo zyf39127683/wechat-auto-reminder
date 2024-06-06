@@ -23,7 +23,7 @@ def get_weather(region):
     }
     key = config["weather_key"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
-    response = get(region_url, headers=headers).json()
+    response = requests.get(region_url, headers=headers).json()
     if response["code"] == "404":
         print("推送消息失败，请检查地区名是否有误！")
         os.system("pause")
@@ -34,15 +34,53 @@ def get_weather(region):
         sys.exit(1)
     else:
         location_id = response["location"][0]["id"]
+    
+    # 获取天气信息
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
-    response = get(weather_url, headers=headers).json()
+    response = requests.get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
     weather_night_text = response["daily"][0]["textNight"]
     weather_day_icon = response["daily"][0]["iconDay"]
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
+    
+    # 获取生活指数信息
+    indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
+    indices_response = requests.get(indices_url, headers=headers).json()
+    if indices_response["code"] != "200":
+        print("获取生活指数失败，请检查请求参数是否正确")
+        os.system("pause")
+        sys.exit(1)
+    
+    sport_index = None
+    car_wash_index = None
+    for index in indices_response["daily"]:
+        if index["type"] == "1":
+            sport_index = index
+        elif index["type"] == "2":
+            car_wash_index = index
+    
+    return {
+        "weather_day_text": weather_day_text,
+        "weather_day_icon": weather_day_icon,
+        "weather_night_text": weather_night_text,
+        "weather_night_icon": weather_night_icon,
+        "temp_max": temp_max,
+        "temp_min": temp_min,
+        "sport_index": {
+            "name": sport_index["name"],
+            "level": sport_index["level"],
+            "category": sport_index["category"],
+            "text": sport_index["text"]
+        } if sport_index else None,
+        "car_wash_index": {
+            "name": car_wash_index["name"],
+            "level": car_wash_index["level"],
+            "category": car_wash_index["category"],
+            "text": car_wash_index["text"]
+        } if car_wash_index else None
+    }
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
