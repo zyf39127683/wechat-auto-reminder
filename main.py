@@ -1,34 +1,21 @@
-import requests
-import sys
-import os
+from requests import get, post
+import sys, os
 from datetime import datetime, date
 from time import localtime
 
-# 从配置文件读取配置信息
-def read_config():
-    config = {}
-    with open('config.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.strip():
-                key, value = line.strip().split('=')
-                config[key] = value
-    return config
-
-# 获取 access_token
 def get_access_token():
     app_id = config["app_id"]
     app_secret = config["app_secret"]
     url = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={}&secret={}"
-           .format(app_id, app_secret))
+                .format(app_id, app_secret))
     try:
-        access_token = requests.get(url).json()['access_token']
+        access_token = get(url).json()['access_token']
     except KeyError:
         print("获取access_token失败，请检查app_id和app_secret是否正确")
         os.system("pause")
         sys.exit(1)
     return access_token
 
-# 获取天气信息
 def get_weather(region):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -36,9 +23,7 @@ def get_weather(region):
     }
     key = config["weather_key"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
-    response = requests.get(region_url, headers=headers).json()
-
-    # 获取单日天气
+    response = get(region_url, headers=headers).json()
     if response["code"] == "404":
         print("推送消息失败，请检查地区名是否有误！")
         os.system("pause")
@@ -50,23 +35,14 @@ def get_weather(region):
     else:
         location_id = response["location"][0]["id"]
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
-    response = requests.get(weather_url, headers=headers).json()
+    response = get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
     weather_night_text = response["daily"][0]["textNight"]
     weather_day_icon = response["daily"][0]["iconDay"]
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-
-    return {
-        "weather_day_text": weather_day_text,
-        "weather_day_icon": weather_day_icon,
-        "weather_night_text": weather_night_text,
-        "weather_night_icon": weather_night_icon,
-        "temp_max": temp_max,
-        "temp_min": temp_min,
-    }
-
+    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
