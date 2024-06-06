@@ -28,7 +28,7 @@ def get_access_token():
         sys.exit(1)
     return access_token
 
-# 获取天气和生活指数信息
+# 获取天气信息
 def get_weather(region):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -37,6 +37,8 @@ def get_weather(region):
     key = config["weather_key"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
     response = requests.get(region_url, headers=headers).json()
+
+    # 获取单日天气
     if response["code"] == "404":
         print("推送消息失败，请检查地区名是否有误！")
         os.system("pause")
@@ -55,20 +57,7 @@ def get_weather(region):
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-    
-    indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
-    indices_response = requests.get(indices_url, headers=headers).json()
-    
-    sport_index = None
-    car_wash_index = None
-    
-    if "daily" in indices_response:
-        for index in indices_response["daily"]:
-            if index["type"] == "1":
-                sport_index = index
-            elif index["type"] == "2":
-                car_wash_index = index
-    
+
     return {
         "weather_day_text": weather_day_text,
         "weather_day_icon": weather_day_icon,
@@ -76,41 +65,47 @@ def get_weather(region):
         "weather_night_icon": weather_night_icon,
         "temp_max": temp_max,
         "temp_min": temp_min,
-        "sport_index": {
-            "name": sport_index["name"],
-            "level": sport_index["level"],
-            "category": sport_index["category"],
-            "text": sport_index["text"]
-        } if sport_index else None,
-        "car_wash_index": {
-            "name": car_wash_index["name"],
-            "level": car_wash_index["level"],
-            "category": car_wash_index["category"],
-            "text": car_wash_index["text"]
-        } if car_wash_index else None
     }
 
-# 主代码部分
-if __name__ == "__main__":
-    # 读取配置文件
-    config = read_config()
+
+# 获取生活指数信息
+def get_weather(region):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    key = config["weather_key"]
+    region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
+    response = requests.get(region_url, headers=headers).json()
+
+    if response["code"] == "404":
+        print("推送消息失败，请检查地区名是否有误！")
+        os.system("pause")
+        sys.exit(1)
+    elif response["code"] == "401":
+        print("推送消息失败，请检查和风天气key是否正确！")
+        os.system("pause")
+        sys.exit(1)
+    else:
+        location_id = response["location"][0]["id"]
     
-    # 设置查询的地区
-    region = "长沙"  # 这里你可以设置你需要查询的地区
+    indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
+    response = requests.get(indices_url, headers=headers).json()
     
-    # 获取天气和生活指数数据
-    weather_data = get_weather(region)
+    sport_index = None
+    car_wash_index = None
+
+    for item in response["daily"]:
+        if item["type"] == "1":
+            sport_index = item
+        elif item["type"] == "2":
+            car_wash_index = item
     
-    # 从 weather_data 字典中获取需要的值
-    weather_day_text = weather_data["weather_day_text"]
-    weather_day_icon = weather_data["weather_day_icon"]
-    weather_night_text = weather_data["weather_night_text"]
-    weather_night_icon = weather_data["weather_night_icon"]
-    temp_max = weather_data["temp_max"]
-    temp_min = weather_data["temp_min"]
-    sport_index = weather_data["sport_index"]
-    car_wash_index = weather_data["car_wash_index"]
-    
+    return {
+        "sport_index_text": sport_index["text"] if sport_index else "无数据",
+        "car_wash_index_text": car_wash_index["text"] if car_wash_index else "无数据"
+    }
+
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
