@@ -1,5 +1,6 @@
-from requests import get, post
-import sys, os
+import requests
+import sys
+import os
 from datetime import datetime, date
 from time import localtime
 
@@ -7,9 +8,9 @@ def get_access_token():
     app_id = config["app_id"]
     app_secret = config["app_secret"]
     url = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={}&secret={}"
-                .format(app_id, app_secret))
+           .format(app_id, app_secret))
     try:
-        access_token = get(url).json()['access_token']
+        access_token = requests.get(url).json()['access_token']
     except KeyError:
         print("获取access_token失败，请检查app_id和app_secret是否正确")
         os.system("pause")
@@ -34,8 +35,6 @@ def get_weather(region):
         sys.exit(1)
     else:
         location_id = response["location"][0]["id"]
-    
-    # 获取天气信息
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
     response = requests.get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
@@ -45,21 +44,18 @@ def get_weather(region):
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
     
-    # 获取生活指数信息
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
     indices_response = requests.get(indices_url, headers=headers).json()
-    if indices_response["code"] != "200":
-        print("获取生活指数失败，请检查请求参数是否正确")
-        os.system("pause")
-        sys.exit(1)
     
     sport_index = None
     car_wash_index = None
-    for index in indices_response["daily"]:
-        if index["type"] == "1":
-            sport_index = index
-        elif index["type"] == "2":
-            car_wash_index = index
+    
+    if "daily" in indices_response:
+        for index in indices_response["daily"]:
+            if index["type"] == "1":
+                sport_index = index
+            elif index["type"] == "2":
+                car_wash_index = index
     
     return {
         "weather_day_text": weather_day_text,
