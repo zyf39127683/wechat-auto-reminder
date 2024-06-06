@@ -37,7 +37,7 @@ def get_weather(region):
     
     # 获取3日天气
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
-    response = get(region_url, headers=headers).json()
+    response = get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
     weather_night_text = response["daily"][0]["textNight"]
     weather_day_icon = response["daily"][0]["iconDay"]
@@ -47,7 +47,7 @@ def get_weather(region):
     
     # 获取运动指数和洗车指数
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
-    response = get(region_url, headers=headers).json()
+    response = get(indices_url, headers=headers).json()
     sport_index_text = ""
     car_wash_index_text = ""
     for item in response["daily"]:
