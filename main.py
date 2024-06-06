@@ -92,7 +92,7 @@ def get_ciba():
     note_ch2 = note_ch[middle_ch:]
     return note_en1, note_en2, note_ch1, note_ch2
 
-def send_message(to_user, access_token, region_name, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max,, sport_index_text, car_wash_index_text, temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2):
+def send_message(to_user, access_token, region_name, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, sport_index_text, car_wash_index_text, temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
