@@ -49,13 +49,15 @@ def get_weather(region):
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
     response = get(indices_url, headers=headers).json()
     print("Weather API Response:", response) 
+    
     sport_index_text = ""
     car_wash_index_text = ""
+    
     for item in response["daily"]:
         if item["type"] == "1":
-            sport_index_text = item["category"]
+            sport_index_text = response["text"]
         elif item["type"] == "2":
-            car_wash_index_text = item["category"]
+            car_wash_index_text = response["text"]
     
     return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
 
