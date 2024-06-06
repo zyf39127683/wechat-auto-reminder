@@ -4,6 +4,17 @@ import os
 from datetime import datetime, date
 from time import localtime
 
+# 从配置文件读取配置信息
+def read_config():
+    config = {}
+    with open('config.txt', 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                key, value = line.strip().split('=')
+                config[key] = value
+    return config
+
+# 获取 access_token
 def get_access_token():
     app_id = config["app_id"]
     app_secret = config["app_secret"]
@@ -17,6 +28,7 @@ def get_access_token():
         sys.exit(1)
     return access_token
 
+# 获取天气和生活指数信息
 def get_weather(region):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -77,6 +89,7 @@ def get_weather(region):
             "text": car_wash_index["text"]
         } if car_wash_index else None
     }
+    
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
