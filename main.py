@@ -44,22 +44,27 @@ def get_weather(region):
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
+
+    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
     
     # 获取运动指数和洗车指数
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
     response = get(indices_url, headers=headers).json()
     print("Weather API Response:", response) 
     
-    sport_index_text = ""
-    car_wash_index_text = ""
+    sport_index_texts = []
+    car_wash_index_texts = []
     
     for item in response["daily"]:
         if item["type"] == "1":
-            sport_index_text = item["text"]
+            sport_index_texts.append(item["text"])
         elif item["type"] == "2":
-            car_wash_index_text = item["text"]
+            car_wash_index_texts.append(item["text"])
     
-    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
+    print("Sport Index Texts:", sport_index_texts)
+    print("Car Wash Index Texts:", car_wash_index_texts)
+    
+    return sport_index_text, car_wash_index_text
 
 
 def get_day_left(day, year, today):
