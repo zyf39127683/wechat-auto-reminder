@@ -89,6 +89,27 @@ def get_weather(region):
             "text": car_wash_index["text"]
         } if car_wash_index else None
     }
+
+# 主代码部分
+if __name__ == "__main__":
+    # 读取配置文件
+    config = read_config()
+    
+    # 设置查询的地区
+    region = "长沙"  # 这里你可以设置你需要查询的地区
+    
+    # 获取天气和生活指数数据
+    weather_data = get_weather(region)
+    
+    # 从 weather_data 字典中获取需要的值
+    weather_day_text = weather_data["weather_day_text"]
+    weather_day_icon = weather_data["weather_day_icon"]
+    weather_night_text = weather_data["weather_night_text"]
+    weather_night_icon = weather_data["weather_night_icon"]
+    temp_max = weather_data["temp_max"]
+    temp_min = weather_data["temp_min"]
+    sport_index = weather_data["sport_index"]
+    car_wash_index = weather_data["car_wash_index"]
     
 
 def get_day_left(day, year, today):
