@@ -50,7 +50,7 @@ def get_weather(region):
     sport_index_text = response["daily"][0]["text"]
     car_wash_index_text = response["daily"][0]["text"]
     
-    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min，sport_index_text，car_wash_index_text
+    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
