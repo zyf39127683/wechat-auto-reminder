@@ -46,11 +46,34 @@ def get_weather(region):
     
     #获取天气质量
     weather_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
-    response = get(weather_url, headers=headers).json()
-    sport_index_text = response["daily"][0]["text"]
-    car_wash_index_text = response["daily"][0]["text"]
+   response = requests.get(indices_url, headers=headers).json()
+    sport_index = None
+    car_wash_index = None
+    for item in response["daily"]:
+        if item["type"] == "1":
+            sport_index = item
+        elif item["type"] == "2":
+            car_wash_index = item
+    
+    sport_index_text = sport_index["text"] if sport_index else "无数据"
+    car_wash_index_text = car_wash_index["text"] if car_wash_index else "无数据"
     
     return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
+
+if __name__ == "__main__":
+    try:
+        with open("config.txt", encoding="utf-8") as f:
+            config = eval(f.read())
+    except FileNotFoundError:
+        sys.exit("推送消息失败，请检查config.txt文件是否与程序位于同一路径")
+    except SyntaxError:
+        sys.exit("推送消息失败，请检查配置文件格式是否正确")
+    
+    region = config["region"]
+    
+    # 调用 get_weather 函数并解包返回的 8 个值
+    weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text = get_weather(region)
+
 
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
