@@ -11,23 +11,21 @@
 若有已认证的公众服务号，类似信息在👉基本配置👈中可以看到
 
 ## 2️⃣ 复制粘贴到测试号模版消息
-今天是 {{date.DATA}}  
+今天是 {{date.DATA}} 
+我们已经认识了 {{love_day.DATA}} 天 
+--> {{love_day_data.DATA}} 
+🏠城市：{{region.DATA}} 
+☀️白天天气：{{weather_day_icon.DATA}} {{weather_day.DATA}}
+ 🌃夜间天气：{{weather_night_icon.DATA}} {{weather_night.DATA}} 
+🔥最高气温：{{temp_max.DATA}} 
+❄️最低气温：{{temp_min.DATA}} 
+🚲运动指数：{{sport_index_text.DATA}} 
+🚗洗车指数：{{car_wash_index_text.DATA}} 
 
-我们已经在一起了 {{love_day.DATA}} 天  
---> {{love_day_data.DATA}}
+** {{birthday1_part1.DATA}}{{birthday1_part2.DATA}} ** 
+** {{birthday2_part1.DATA}}{{birthday2_part2.DATA}} ** 
 
-城市：{{region.DATA}}  
-白天天气：{{weather_day_icon.DATA}} {{weather_day.DATA}}  
-夜间天气：{{weather_night_icon.DATA}} {{weather_night.DATA}}  
-最高气温：{{temp_max.DATA}}  
-最低气温：{{temp_min.DATA}}
-
-** {{birthday1_part1.DATA}}{{birthday1_part2.DATA}} **  
-** {{birthday2_part1.DATA}}{{birthday2_part2.DATA}} **
-
-“{{note_ch1.DATA}}{{note_ch2.DATA}}”  
-"{{note_en1.DATA}}{{note_en2.DATA}}"  
-
+“{{note_ch1.DATA}}{{note_ch2.DATA}}” "{{note_en1.DATA}}{{note_en2.DATA}}"
 ## 3️⃣ 获取和风天气API Key
 
 ### https://id.qweather.com/
