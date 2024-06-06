@@ -68,45 +68,6 @@ def get_weather(region):
     }
 
 
-# 获取生活指数信息
-def get_weather(region):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-    }
-    key = config["weather_key"]
-    region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
-    response = requests.get(region_url, headers=headers).json()
-
-    if response["code"] == "404":
-        print("推送消息失败，请检查地区名是否有误！")
-        os.system("pause")
-        sys.exit(1)
-    elif response["code"] == "401":
-        print("推送消息失败，请检查和风天气key是否正确！")
-        os.system("pause")
-        sys.exit(1)
-    else:
-        location_id = response["location"][0]["id"]
-    
-    indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
-    response = requests.get(indices_url, headers=headers).json()
-    
-    sport_index = None
-    car_wash_index = None
-
-    for item in response["daily"]:
-        if item["type"] == "1":
-            sport_index = item
-        elif item["type"] == "2":
-            car_wash_index = item
-    
-    return {
-        "sport_index_text": sport_index["text"] if sport_index else "无数据",
-        "car_wash_index_text": car_wash_index["text"] if car_wash_index else "无数据"
-    }
-
-
 def get_day_left(day, year, today):
     day_year = day.split("-")[0]
     day_month = int(day.split("-")[1])
