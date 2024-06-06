@@ -48,6 +48,7 @@ def get_weather(region):
     # 获取运动指数和洗车指数
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
     response = get(indices_url, headers=headers).json()
+    print("Weather API Response:", response) 
     sport_index_text = ""
     car_wash_index_text = ""
     for item in response["daily"]:
