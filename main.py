@@ -16,7 +16,7 @@ def get_access_token():
         sys.exit(1)
     return access_token
 
-def get_weather():
+def get_weather(region):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
@@ -45,19 +45,16 @@ def get_weather():
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
     
-    # 获取天气质量
+    # 获取运动指数和洗车指数
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
     response = requests.get(indices_url, headers=headers).json()
-    sport_index = None
-    car_wash_index = None
+    sport_index_text = ""
+    car_wash_index_text = ""
     for item in response["daily"]:
         if item["type"] == "1":
-            sport_index = item
+            sport_index_text = item["text"]
         elif item["type"] == "2":
-            car_wash_index = item
-    
-    sport_index_text = sport_index["text"] if sport_index else "无数据"
-    car_wash_index_text = car_wash_index["text"] if car_wash_index else "无数据"
+            car_wash_index_text = item["text"]
     
     return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
 
@@ -95,7 +92,7 @@ def get_ciba():
     note_ch2 = note_ch[middle_ch:]
     return note_en1, note_en2, note_ch1, note_ch2
 
-def send_message(to_user, access_token, region_name, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2):
+def send_message(to_user, access_token, region_name, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max,, sport_index_text, car_wash_index_text, temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -222,7 +219,7 @@ if __name__ == "__main__":
     access_token = get_access_token()
     users = config["user"]
     region = config["region"]
-    weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min = get_weather(region)
+    weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text = get_weather(region)
     note_en1, note_en2, note_ch1, note_ch2 = get_ciba()
     if ((config["note_ch1"] != "") or (config["note_ch2"] != "")):
         note_ch1 = config["note_ch1"]
@@ -233,5 +230,5 @@ if __name__ == "__main__":
     note_de1 = config["note_de1"]
     note_de2 = config["note_de2"]
     for user in users:
-        send_message(user, access_token, region, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2)
+        send_message(user, access_token, region, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, sport_index_text, car_wash_index_text , temp_min, note_ch1, note_ch2, note_en1, note_en2, note_de1, note_de2)
     os.system("pause")
