@@ -16,14 +16,14 @@ def get_access_token():
         sys.exit(1)
     return access_token
 
-def get_weather(region):
+def get_weather(region, config):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
     }
     key = config["weather_key"]
     region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format(region, key)
-    response = get(region_url, headers=headers).json()
+    response = requests.get(region_url, headers=headers).json()
     if response["code"] == "404":
         print("推送消息失败，请检查地区名是否有误！")
         os.system("pause")
@@ -34,9 +34,10 @@ def get_weather(region):
         sys.exit(1)
     else:
         location_id = response["location"][0]["id"]
-    #获取3日天气
+    
+    # 获取3日天气
     weather_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
-    response = get(weather_url, headers=headers).json()
+    response = requests.get(weather_url, headers=headers).json()
     weather_day_text = response["daily"][0]["textDay"]
     weather_night_text = response["daily"][0]["textNight"]
     weather_day_icon = response["daily"][0]["iconDay"]
@@ -44,9 +45,9 @@ def get_weather(region):
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
     
-    #获取天气质量
-    weather_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
-   response = requests.get(indices_url, headers=headers).json()
+    # 获取天气质量
+    indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
+    response = requests.get(indices_url, headers=headers).json()
     sport_index = None
     car_wash_index = None
     for item in response["daily"]:
@@ -59,20 +60,6 @@ def get_weather(region):
     car_wash_index_text = car_wash_index["text"] if car_wash_index else "无数据"
     
     return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
-
-if __name__ == "__main__":
-    try:
-        with open("config.txt", encoding="utf-8") as f:
-            config = eval(f.read())
-    except FileNotFoundError:
-        sys.exit("推送消息失败，请检查config.txt文件是否与程序位于同一路径")
-    except SyntaxError:
-        sys.exit("推送消息失败，请检查配置文件格式是否正确")
-    
-    region = config["region"]
-    
-    # 调用 get_weather 函数并解包返回的 8 个值
-    weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text = get_weather(region)
 
 
 def get_day_left(day, year, today):
