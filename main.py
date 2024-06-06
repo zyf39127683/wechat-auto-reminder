@@ -52,9 +52,9 @@ def get_weather(region):
     car_wash_index_text = ""
     for item in response["daily"]:
         if item["type"] == "1":
-            sport_index_text = item["text"]
+            sport_index_text = item["category"]
         elif item["type"] == "2":
-            car_wash_index_text = item["text"]
+            car_wash_index_text = item["category"]
     
     return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text
 
