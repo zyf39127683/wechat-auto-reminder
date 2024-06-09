@@ -50,8 +50,8 @@ def get_weather(region):
     response = get(indices_url, headers=headers).json()
     print("Weather API Response:", response) 
     
-    sport_index_text = ""
-    car_wash_index_text = ""
+    sport_index_text = []
+    car_wash_index_text = []
     
     for item in response["daily"]:
         if item["type"] == "1":
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     access_token = get_access_token()
     users = config["user"]
     region = config["region"]
-    weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min, sport_index_text, car_wash_index_text = get_weather(region)
+    sport_index_text, car_wash_index_text, weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min = get_weather(region)
     note_en1, note_en2, note_ch1, note_ch2 = get_ciba()
     if ((config["note_ch1"] != "") or (config["note_ch2"] != "")):
         note_ch1 = config["note_ch1"]
