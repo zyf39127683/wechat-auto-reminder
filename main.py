@@ -148,6 +148,12 @@ def send_message(to_user, access_token, region_name, weather_day_text, weather_d
             "weather_night": {
                 "value": weather_night_text,
             },
+            "sport_index": {  # 修改此处，确保传递字符串
+                "value": "".join(sport_index_text),
+            },
+            "car_wash_index": {  # 修改此处，确保传递字符串
+                "value": "".join(car_wash_index_text),
+            },
             "weather_day_icon": {
                 "value": "",
             },
