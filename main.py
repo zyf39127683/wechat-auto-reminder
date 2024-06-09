@@ -148,10 +148,10 @@ def send_message(to_user, access_token, region_name, weather_day_text, weather_d
             "weather_night": {
                 "value": weather_night_text,
             },
-            "sport_index": { 
+            "sport_index_text": { 
                 "value": sport_index_text,
             },
-            "car_wash_index": { 
+            "car_wash_index_text": { 
                 "value": car_wash_index_text,
             },
             "weather_day_icon": {
