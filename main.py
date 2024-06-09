@@ -44,8 +44,6 @@ def get_weather(region):
     weather_night_icon = response["daily"][0]["iconNight"]
     temp_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     temp_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-
-    return weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
     
     # 获取运动指数和洗车指数
     indices_url = "https://devapi.qweather.com/v7/indices/1d?type=1,2&location={}&key={}".format(location_id, key)
@@ -64,7 +62,7 @@ def get_weather(region):
     print("Sport Index Text:", sport_index_text)
     print("Car Wash Index Text:", car_wash_index_text)
     
-    return sport_index_text, car_wash_index_text
+    return sport_index_text, car_wash_index_text , weather_day_text, weather_day_icon, weather_night_text, weather_night_icon, temp_max, temp_min
 
 
 def get_day_left(day, year, today):
